@@ -2,12 +2,14 @@ package com.example.deadpool.myapplication;
 
 import android.app.Activity;
 import android.app.ListActivity;
+import android.app.ProgressDialog;
 import android.app.SearchManager;
 import android.content.Context;
 
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,6 +23,9 @@ import android.widget.TextView;
 
 import java.sql.SQLException;
 
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.logging.LogRecord;
+
 
 public class MainActivity extends Activity {
     TextView textView;
@@ -33,21 +38,38 @@ public class MainActivity extends Activity {
 //        getActionBar().setTitle("Robo test");
         setContentView(R.layout.activity_main);
         System.out.println("will create..................");
-        DatabaseHelper databaseHelper = new DatabaseHelper(getApplicationContext());
-        //databaseHelper.seedTheDB();
 
-        ListView listView = (ListView) findViewById(R.id.list_view);
-        Cursor cursor = databaseHelper.getSqLiteDatabase().rawQuery("select * from "+ DatabaseHelper.TABLE_NAME, new String[]{});
-        System.out.println("the count ---------------- " + cursor.getColumnName(2));
-        cursor.getCount();
+        final ProgressDialog progressDialog = ProgressDialog.show(this, "", "Loading...", true);
+
+        ScheduledThreadPoolExecutor scheduledThreadPoolExecutor = new ScheduledThreadPoolExecutor(1);
+
+        scheduledThreadPoolExecutor.execute(new Runnable() {
+            @Override
+            public void run() {
+                DatabaseHelper databaseHelper = new DatabaseHelper(getApplicationContext());
+                databaseHelper.seedTheDB();
+
+                Cursor cursor = databaseHelper.getSqLiteDatabase().rawQuery("select * from " + DatabaseHelper.TABLE_NAME, new String[]{});
+                System.out.println("the count ---------------- " + cursor.getColumnName(2));
+                cursor.getCount();
 
 
-        String [] fromColumns = {DatabaseHelper.NAME, DatabaseHelper.CATEGORY};
-        int [] viewIDS = {R.id.product_name, R.id.product_category};
-        SimpleCursorAdapter simpleCursorAdapter = new SimpleCursorAdapter(this, R.layout.product_list_layout, cursor, fromColumns, viewIDS, 0);
-        System.out.println("adapter  count ---------------- " + simpleCursorAdapter.getCount());
+                String[] fromColumns = {DatabaseHelper.NAME, DatabaseHelper.CATEGORY};
+                int[] viewIDS = {R.id.product_name, R.id.product_category};
+                final SimpleCursorAdapter simpleCursorAdapter = new SimpleCursorAdapter(MainActivity.this, R.layout.product_list_layout, cursor, fromColumns, viewIDS, 0);
+                System.out.println("adapter  count ---------------- " + simpleCursorAdapter.getCount());
 
-        listView.setAdapter(simpleCursorAdapter);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        ListView listView = (ListView) findViewById(R.id.list_view);
+                        listView.setAdapter(simpleCursorAdapter);
+                        progressDialog.dismiss();
+                    }
+                });
+            }
+        });
+
 
 
     /*    final EditText editText = (EditText) findViewById(R.id.edit_box);
