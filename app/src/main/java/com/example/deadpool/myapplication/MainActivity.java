@@ -47,7 +47,7 @@ public class MainActivity extends Activity {
             @Override
             public void run() {
                 DatabaseHelper databaseHelper = new DatabaseHelper(getApplicationContext());
-                databaseHelper.seedTheDB();
+                //databaseHelper.seedTheDB();
 
                 Cursor cursor = databaseHelper.getSqLiteDatabase().rawQuery("select * from " + DatabaseHelper.TABLE_NAME, new String[]{});
                 System.out.println("the count ---------------- " + cursor.getColumnName(2));
