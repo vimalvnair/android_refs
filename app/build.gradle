@@ -31,6 +31,13 @@ android {
         }
     }
 }
+
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile 'com.android.support:appcompat-v7:21.0.2'
+}
+
 robolectric {
     include '**/*Test.class'
     exclude '**/espresso/**/*.class'

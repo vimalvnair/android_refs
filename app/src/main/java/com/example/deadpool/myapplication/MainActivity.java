@@ -14,8 +14,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.SimpleCursorAdapter;
@@ -64,6 +66,23 @@ public class MainActivity extends Activity {
                     public void run() {
                         ListView listView = (ListView) findViewById(R.id.list_view);
                         listView.setAdapter(simpleCursorAdapter);
+                        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                LinearLayout linearLayout = (LinearLayout) view;
+                                TextView productName = (TextView) view.findViewById(R.id.product_name);
+                                TextView productCategory = (TextView) view.findViewById(R.id.product_category);
+                                System.out.println("clicked......");
+                                System.out.println(productName.getText());
+                                System.out.println(productCategory.getText());
+                                Intent intent = new Intent(MainActivity.this, ItemDetailActivity.class);
+
+                                intent.putExtra("product_name", productName.getText());
+                                intent.putExtra("product_description", productCategory.getText());
+                                startActivity(intent);
+
+                            }
+                        });
                         progressDialog.dismiss();
                     }
                 });
@@ -101,6 +120,8 @@ public class MainActivity extends Activity {
                 (SearchView) menu.findItem(R.id.search).getActionView();
         searchView.setSearchableInfo(
                 searchManager.getSearchableInfo(getComponentName()));
+        searchView.setIconifiedByDefault(false);
+        searchView.setSubmitButtonEnabled(true);
 
         System.out.println( " seeeee----"  + searchManager.getSearchableInfo(getComponentName()));
         System.out.println("comp nammmme " + getComponentName());

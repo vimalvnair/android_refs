@@ -16,7 +16,8 @@ public class MainActivityTest {
 
     @Test
     public void testSomething() throws Exception {
+        System.out.println("---------------------------------\n\n\n");
         Activity activity = Robolectric.buildActivity(MainActivity.class).create().get();
-        assertTrue(activity != null);
+        assertTrue(false);
     }
 }
