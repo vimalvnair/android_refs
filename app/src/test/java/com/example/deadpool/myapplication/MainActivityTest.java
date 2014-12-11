@@ -11,7 +11,7 @@ import org.robolectric.annotation.Config;
 import static org.junit.Assert.assertTrue;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(emulateSdk = 18)
+//@Config(emulateSdk = 18)
 public class MainActivityTest {
 
     @Test
