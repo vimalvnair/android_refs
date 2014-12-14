@@ -45,7 +45,6 @@
         <activity
             android:name=".ItemDetailActivity"
             android:label="@string/title_activity_item_detail"
-            android:parentActivityName=".MainActivity"
             >
         </activity>
     </application>

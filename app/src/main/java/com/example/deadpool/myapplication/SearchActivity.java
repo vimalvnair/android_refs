@@ -26,36 +26,26 @@ public class SearchActivity extends Activity {
 
     @Override
     protected void onNewIntent(Intent intent) {
-        System.out.println("calling new intent.............");
         setIntent(intent);
         findProductsAndUpdate(R.id.search_list_view, getIntent());
     }
 
     private void findProductsAndUpdate(int listViewID, Intent intent) {
-
-        System.out.println("finding prod.....");
-
         if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
-
             String query = intent.getStringExtra(SearchManager.QUERY);
             textView.setText("Searched for: " + query);
-            System.out.println("has search............."+ query);
-
             ListView listView = (ListView) findViewById(listViewID);
-            DatabaseHelper databaseHelper = new DatabaseHelper(getApplicationContext());
+            ProductListHelper productListHelper = new ProductListHelper(SearchActivity.this, listView);
 
+            DatabaseHelper databaseHelper = new DatabaseHelper(getApplicationContext());
             Cursor cursor = databaseHelper.getSqLiteDatabase().rawQuery("select * from "+ DatabaseHelper.TABLE_NAME +
                     " where " + DatabaseHelper.NAME +
                     " like ? or " +
                     DatabaseHelper.CATEGORY +
                     " like ?"
                     , new String[]{"%"+query+"%", "%"+query+"%"});
-            String [] fromColumns = {DatabaseHelper.NAME, DatabaseHelper.CATEGORY};
-            int [] viewIDS = {R.id.product_name, R.id.product_category};
-            SimpleCursorAdapter simpleCursorAdapter = new SimpleCursorAdapter(this, R.layout.product_list_layout, cursor, fromColumns, viewIDS, 0);
-            System.out.println("adapter  count ---------------- " + simpleCursorAdapter.getCount());
 
-            listView.setAdapter(simpleCursorAdapter);
+            productListHelper.setupListView(cursor);
         }
     }
 

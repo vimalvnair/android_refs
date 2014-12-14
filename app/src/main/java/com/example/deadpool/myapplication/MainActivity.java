@@ -34,12 +34,8 @@ public class MainActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
-
-//        getActionBar().setTitle("Robo test");
         setContentView(R.layout.activity_main);
-        System.out.println("will create..................");
 
         final ProgressDialog progressDialog = ProgressDialog.show(this, "", "Loading...", true);
 
@@ -51,67 +47,31 @@ public class MainActivity extends Activity {
                 DatabaseHelper databaseHelper = new DatabaseHelper(getApplicationContext());
                 //databaseHelper.seedTheDB();
 
-                Cursor cursor = databaseHelper.getSqLiteDatabase().rawQuery("select * from " + DatabaseHelper.TABLE_NAME, new String[]{});
-                System.out.println("the count ---------------- " + cursor.getColumnName(2));
+                final Cursor cursor = databaseHelper.getSqLiteDatabase().rawQuery("select * from " + DatabaseHelper.TABLE_NAME, new String[]{});
                 cursor.getCount();
 
-
-                String[] fromColumns = {DatabaseHelper.NAME, DatabaseHelper.CATEGORY};
-                int[] viewIDS = {R.id.product_name, R.id.product_category};
-                final SimpleCursorAdapter simpleCursorAdapter = new SimpleCursorAdapter(MainActivity.this, R.layout.product_list_layout, cursor, fromColumns, viewIDS, 0);
-                System.out.println("adapter  count ---------------- " + simpleCursorAdapter.getCount());
+                ListView listView = (ListView) findViewById(R.id.list_view);
+                final ProductListHelper productListHelper = new ProductListHelper(MainActivity.this, listView);
 
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         ListView listView = (ListView) findViewById(R.id.list_view);
-                        listView.setAdapter(simpleCursorAdapter);
-                        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                            @Override
-                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                                LinearLayout linearLayout = (LinearLayout) view;
-                                TextView productName = (TextView) view.findViewById(R.id.product_name);
-                                TextView productCategory = (TextView) view.findViewById(R.id.product_category);
-                                System.out.println("clicked......");
-                                System.out.println(productName.getText());
-                                System.out.println(productCategory.getText());
-                                Intent intent = new Intent(MainActivity.this, ItemDetailActivity.class);
-
-                                intent.putExtra("product_name", productName.getText());
-                                intent.putExtra("product_description", productCategory.getText());
-                                startActivity(intent);
-
-                            }
-                        });
+                        productListHelper.setupListView(cursor);
                         progressDialog.dismiss();
                     }
                 });
             }
         });
-
-
-
-    /*    final EditText editText = (EditText) findViewById(R.id.edit_box);
-
-        final Button button = (Button) findViewById(R.id.button);
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                textView = (TextView) findViewById(R.id.text_field);
-                textView.setText(editText.getText());
-            }
-        });*/
     }
 
     @Override
     protected void onNewIntent(Intent intent) {
-        System.out.println("main act single top.....");
+
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-
         getMenuInflater().inflate(R.menu.menu_main, menu);
 
         SearchManager searchManager =
@@ -123,23 +83,12 @@ public class MainActivity extends Activity {
         searchView.setIconifiedByDefault(false);
         searchView.setSubmitButtonEnabled(true);
 
-        System.out.println( " seeeee----"  + searchManager.getSearchableInfo(getComponentName()));
-        System.out.println("comp nammmme " + getComponentName());
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-//        if (id == R.id.action_settings) {
-
-  //          return true;
-    //    }
 
         switch (item.getItemId()){
             case R.id.extras:
