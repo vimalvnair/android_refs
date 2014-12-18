@@ -36,7 +36,7 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        System.out.println("on create.....................");
         final ProgressDialog progressDialog = ProgressDialog.show(this, "", "Loading...", true);
 
         ScheduledThreadPoolExecutor scheduledThreadPoolExecutor = new ScheduledThreadPoolExecutor(1);

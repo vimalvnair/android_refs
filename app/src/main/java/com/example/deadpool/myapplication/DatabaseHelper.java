@@ -27,7 +27,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
     public static final String TABLE_NAME="products";
     public static final String NAME = "name";
     public static final String CATEGORY="category";
-    private static final String COLUMN_ID = "_id";
+    public static final String COLUMN_ID = "_id";
 
     private static final String TABLE_CREATE="create table " +TABLE_NAME + " (" + COLUMN_ID + " integer primary key autoincrement, " +
                                                                                    NAME + " text unique not null, " +

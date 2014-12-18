@@ -47,6 +47,11 @@
             android:label="@string/title_activity_item_detail"
             >
         </activity>
+
+        <provider
+            android:authorities="com.example.deadpool.myapplication.SearchSuggestionProvider"
+            android:name=".SearchSuggestionProvider" />
+
     </application>
 
 </manifest>
