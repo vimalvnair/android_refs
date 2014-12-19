@@ -10,6 +10,7 @@ import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.provider.BaseColumns;
 
+import java.util.Arrays;
 import java.util.HashMap;
 
 /**
@@ -34,7 +35,7 @@ public class SearchSuggestionProvider extends ContentProvider{
     @Override
     public boolean onCreate() {
         aliasMap = new HashMap<String, String>();
-       // aliasMap.put(DatabaseHelper.COLUMN_ID, DatabaseHelper.COLUMN_ID);
+        aliasMap.put(BaseColumns._ID, BaseColumns._ID);
         aliasMap.put(DatabaseHelper.CATEGORY, DatabaseHelper.CATEGORY);
         aliasMap.put(SearchManager.SUGGEST_COLUMN_TEXT_1, DatabaseHelper.NAME + " as " + SearchManager.SUGGEST_COLUMN_TEXT_1);
         return false;
@@ -54,12 +55,14 @@ public class SearchSuggestionProvider extends ContentProvider{
 
                 DatabaseHelper databaseHelper = new DatabaseHelper(getContext());
                 SQLiteDatabase sqLiteDatabase = databaseHelper.getReadableDatabase();
-
+                System.out.println("....size of PM: " + aliasMap.size());
                 selection = DatabaseHelper.NAME + " like ?";
                 SQLiteQueryBuilder sqLiteQueryBuilder = new SQLiteQueryBuilder();
                 sqLiteQueryBuilder.setProjectionMap(aliasMap);
                 sqLiteQueryBuilder.setTables(DatabaseHelper.TABLE_NAME);
-                Cursor cursor =  sqLiteQueryBuilder.query(sqLiteDatabase, new String[]{SearchManager.SUGGEST_COLUMN_TEXT_1}, selection, selectionArgs, null, null, null, "10");
+                Cursor cursor =  sqLiteQueryBuilder.query(sqLiteDatabase, new String[]{BaseColumns._ID, SearchManager.SUGGEST_COLUMN_TEXT_1}, selection, selectionArgs, null, null, null, "10");
+
+                System.out.println("match count of: " + cursor.getCount() + Arrays.toString(cursor.getColumnNames()));
                 return  cursor;
             default:
                 System.out.println("no match");
