@@ -5,4 +5,5 @@
     android:searchSuggestIntentAction="android.intent.action.VIEW"
     android:searchSuggestAuthority="com.example.deadpool.myapplication.SearchSuggestionProvider"
     android:searchSuggestSelection="word MATCH ?"
+    android:searchSuggestThreshold="3"
 />

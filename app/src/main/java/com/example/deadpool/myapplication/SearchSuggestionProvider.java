@@ -36,7 +36,8 @@ public class SearchSuggestionProvider extends ContentProvider{
     public boolean onCreate() {
         aliasMap = new HashMap<String, String>();
         aliasMap.put(BaseColumns._ID, BaseColumns._ID);
-        aliasMap.put(DatabaseHelper.CATEGORY, DatabaseHelper.CATEGORY);
+        aliasMap.put(SearchManager.SUGGEST_COLUMN_INTENT_DATA, BaseColumns._ID + " as " + SearchManager.SUGGEST_COLUMN_INTENT_DATA);
+        aliasMap.put(SearchManager.SUGGEST_COLUMN_TEXT_2, DatabaseHelper.CATEGORY + " as " + SearchManager.SUGGEST_COLUMN_TEXT_2);
         aliasMap.put(SearchManager.SUGGEST_COLUMN_TEXT_1, DatabaseHelper.NAME + " as " + SearchManager.SUGGEST_COLUMN_TEXT_1);
         return false;
     }
@@ -55,7 +56,8 @@ public class SearchSuggestionProvider extends ContentProvider{
                 SQLiteQueryBuilder sqLiteQueryBuilder = new SQLiteQueryBuilder();
                 sqLiteQueryBuilder.setProjectionMap(aliasMap);
                 sqLiteQueryBuilder.setTables(DatabaseHelper.TABLE_NAME);
-                Cursor cursor =  sqLiteQueryBuilder.query(sqLiteDatabase, new String[]{BaseColumns._ID, SearchManager.SUGGEST_COLUMN_TEXT_1}, selection, selectionString, null, null, null, "10");
+                Cursor cursor =  sqLiteQueryBuilder.query(sqLiteDatabase, new String[]{BaseColumns._ID, SearchManager.SUGGEST_COLUMN_INTENT_DATA, SearchManager.SUGGEST_COLUMN_TEXT_1, SearchManager.SUGGEST_COLUMN_TEXT_2}, selection, selectionString, null, null, null, "10");
+                System.out.println("--------------: " + Arrays.toString(cursor.getColumnNames()));
                 return  cursor;
             default:
                 System.out.println("no match");

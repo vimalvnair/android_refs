@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.provider.BaseColumns;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListView;
@@ -16,9 +17,11 @@ import android.widget.TextView;
 
 public class SearchActivity extends Activity {
     TextView textView = null;
+    DatabaseHelper databaseHelper;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        databaseHelper = new DatabaseHelper(getApplicationContext());
         setContentView(R.layout.activity_search);
         textView = (TextView) findViewById(R.id.search_text_view);
         findProductsAndUpdate(R.id.search_list_view, getIntent());
@@ -37,7 +40,7 @@ public class SearchActivity extends Activity {
             ListView listView = (ListView) findViewById(listViewID);
             ProductListHelper productListHelper = new ProductListHelper(SearchActivity.this, listView);
 
-            DatabaseHelper databaseHelper = new DatabaseHelper(getApplicationContext());
+
             Cursor cursor = databaseHelper.getSqLiteDatabase().rawQuery("select * from "+ DatabaseHelper.TABLE_NAME +
                     " where " + DatabaseHelper.NAME +
                     " like ? or " +
@@ -46,6 +49,18 @@ public class SearchActivity extends Activity {
                     , new String[]{"%"+query+"%", "%"+query+"%"});
 
             productListHelper.setupListView(cursor);
+        }else if( Intent.ACTION_VIEW.equals(intent.getAction())) {
+            System.out.println("view action hit " + intent.getDataString());
+            Cursor cursor = databaseHelper.getSqLiteDatabase().rawQuery("select * from " + DatabaseHelper.TABLE_NAME + " where " + BaseColumns._ID + " = " + intent.getDataString(), null);
+            System.out.println("count: " + cursor.getCount());
+            cursor.moveToFirst();
+            //System.out.println(cursor.getString(0));
+            Intent itemDetailIntent = new Intent(this, ItemDetailActivity.class);
+
+            itemDetailIntent.putExtra("product_name", cursor.getString(1));
+            itemDetailIntent.putExtra("product_description", cursor.getString(2));
+            startActivity(itemDetailIntent);
+            cursor.close();
         }
     }
 
