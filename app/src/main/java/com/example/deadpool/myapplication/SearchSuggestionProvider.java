@@ -43,26 +43,19 @@ public class SearchSuggestionProvider extends ContentProvider{
 
     @Override
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
-        System.out.println("uri:---- " + uri);
-        System.out.println("match : " + uriMatcher.match(uri));
         switch (uriMatcher.match(uri)){
             case SEARCH_SUGGEST:
-                System.out.println("suggest...." + selection);
                 if(selectionArgs != null){
                     selectionArgs[0] = "%"+selectionArgs[0]+"%";
-                    System.out.println("selection "+ selectionArgs[0]);
                 }
-
+                String [] selectionString = new String[] {selectionArgs[0], selectionArgs[0]};
                 DatabaseHelper databaseHelper = new DatabaseHelper(getContext());
                 SQLiteDatabase sqLiteDatabase = databaseHelper.getReadableDatabase();
-                System.out.println("....size of PM: " + aliasMap.size());
-                selection = DatabaseHelper.NAME + " like ?";
+                selection = DatabaseHelper.NAME + " like ? or " + DatabaseHelper.CATEGORY + " like ? ";
                 SQLiteQueryBuilder sqLiteQueryBuilder = new SQLiteQueryBuilder();
                 sqLiteQueryBuilder.setProjectionMap(aliasMap);
                 sqLiteQueryBuilder.setTables(DatabaseHelper.TABLE_NAME);
-                Cursor cursor =  sqLiteQueryBuilder.query(sqLiteDatabase, new String[]{BaseColumns._ID, SearchManager.SUGGEST_COLUMN_TEXT_1}, selection, selectionArgs, null, null, null, "10");
-
-                System.out.println("match count of: " + cursor.getCount() + Arrays.toString(cursor.getColumnNames()));
+                Cursor cursor =  sqLiteQueryBuilder.query(sqLiteDatabase, new String[]{BaseColumns._ID, SearchManager.SUGGEST_COLUMN_TEXT_1}, selection, selectionString, null, null, null, "10");
                 return  cursor;
             default:
                 System.out.println("no match");
