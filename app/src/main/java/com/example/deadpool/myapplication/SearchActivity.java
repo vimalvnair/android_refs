@@ -54,13 +54,12 @@ public class SearchActivity extends Activity {
             Cursor cursor = databaseHelper.getSqLiteDatabase().rawQuery("select * from " + DatabaseHelper.TABLE_NAME + " where " + BaseColumns._ID + " = " + intent.getDataString(), null);
             System.out.println("count: " + cursor.getCount());
             cursor.moveToFirst();
-            //System.out.println(cursor.getString(0));
             Intent itemDetailIntent = new Intent(this, ItemDetailActivity.class);
-
             itemDetailIntent.putExtra("product_name", cursor.getString(1));
             itemDetailIntent.putExtra("product_description", cursor.getString(2));
             startActivity(itemDetailIntent);
             cursor.close();
+            finish();
         }
     }
 
